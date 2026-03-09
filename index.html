@@ -186,7 +186,7 @@
   <div class="scanlines"></div>
 
   <div class="scene">
-    <div class="header-label">Oogie's Mental Doomsday Clock</div>
+    <div class="header-label">Bulletin of the Atomic Scientists</div>
 
     <div class="clock-svg-container">
       <svg viewBox="0 0 500 500" id="clockSvg">
@@ -302,19 +302,17 @@
       const MAX_SECONDS = 300;
       const clamped = Math.min(Math.max(seconds, 0), MAX_SECONDS);
 
-      // Minute hand: 0s = pointing straight at 12 (midnight), 300s = 5 min before (pointing at 11)
-      // Angle: 0deg = 12 o'clock, clockwise
-      // 5 min before = -30 degrees from 12 (i.e., 330 degrees)
-      const minuteFraction = clamped / 60; // fraction of a full hour represented
-      const minuteAngle = -(minuteFraction / 60) * 360; // goes counter-clockwise from midnight
-      // Normalize: we want the hand to be near 12, slightly CCW
-      const minuteDeg = (360 + minuteAngle) % 360;
+      // Minute hand: points just before 12.
+      // More seconds = further away (CCW from 12). Fewer seconds = closer to 12.
+      // MAX_SECONDS (300s = 5min) maps to -30deg (i.e. 330deg, pointing at 11).
+      // 0s maps to 0deg (pointing straight at 12).
+      const minuteDeg = (360 - (clamped / MAX_SECONDS) * 30) % 360;
 
-      // Hour hand: much slower, park it slightly before 12
-      const hourDeg = (360 - (clamped / (12 * 3600)) * 360) % 360;
+      // Hour hand: parked just before 12, moves very slightly with danger level
+      const hourDeg = (360 - (clamped / MAX_SECONDS) * 6) % 360;
 
       document.getElementById('minuteHand').setAttribute('transform', `rotate(${minuteDeg}, 250, 250)`);
-      document.getElementById('hourHand').setAttribute('transform', `rotate(${hourDeg > 350 ? hourDeg : 355}, 250, 250)`);
+      document.getElementById('hourHand').setAttribute('transform', `rotate(${hourDeg}, 250, 250)`);
 
       // Progress arc: sweep from 12 going clockwise, showing "how close"
       // More danger = larger arc (approaching from the left toward 12)
