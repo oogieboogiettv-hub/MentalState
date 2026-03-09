@@ -299,7 +299,7 @@
       // 100 seconds = roughly 1m40s before midnight
       // We show minute hand approaching 12.
       // Max representable = 300s (5 min), min = 0s
-      const MAX_SECONDS = 300;
+      const MAX_SECONDS = 21600;
       const clamped = Math.min(Math.max(seconds, 0), MAX_SECONDS);
 
       // Minute hand: points just before 12.
